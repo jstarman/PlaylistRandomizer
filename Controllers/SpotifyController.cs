@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Serilog;
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace PlaylistRandomizer.Controllers
@@ -56,9 +54,9 @@ namespace PlaylistRandomizer.Controllers
 
         [HttpGet]
         [Route("playlists")]
-        public async Task<Playlists> PlayLists() 
+        public async Task<Envelope<Playlist>> PlayLists() 
         {
-            return await _spotify.Get<Playlists>(SpotifyApi.Playlists(SpotifyApi.Me));
+            return await _spotify.GetMy<Envelope<Playlist>>(SpotifyApi.Playlists);
         }
 
         [HttpGet]
@@ -68,11 +66,11 @@ namespace PlaylistRandomizer.Controllers
             return _spotify.Token;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("test")]
-        public string Test()
+        public Envelope<Playlist> Test(Envelope<Playlist> playlists)
         {
-            return SpotifyApi.Playlists(SpotifyApi.Me).ToString();
+            return playlists;
         }
     }
 }

@@ -1,9 +1,7 @@
 using Serilog;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Net.Http;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -80,17 +78,22 @@ namespace PlaylistRandomizer
             
             if (string.IsNullOrWhiteSpace(_sessionToken.Token))
             {
-                _me = await Get<MeResponse>(SpotifyApi.Me);
                 result = "Authentication Error: token was not retieved.";
                 _logger.Error(result);
             }
             else
             {
+                _me = await Get<MeResponse>(SpotifyApi.Me);
                 result = "Authentication Successful: Token Received";
                 _logger.Information(result);
             }
 
             return result;
+        }
+
+        public Task<T> GetMy<T>(string relativeUri)
+        {
+            return Get<T>(new Uri($"{_me.UserUri}/{relativeUri}"));
         }
 
         public async Task<T> Get<T>(Uri uri)
@@ -165,17 +168,21 @@ namespace PlaylistRandomizer
     public class SpotifyApi
     {
         public static Uri Me => new Uri("https://api.spotify.com/v1/me");
-        public static Uri Playlists(Uri userUri) => new Uri(userUri, "playlists");
+        public static string Playlists => "playlists";
     }
 
-    public class Playlists
+    public class Envelope<T>
     {
         [JsonPropertyName("href")]
         public string Resource { get; set; }
         [JsonPropertyName("total")]
         public int Total { get; set; }
+        [JsonPropertyName("next")]
+        public string Next { get; set; }
+        [JsonPropertyName("previous")]
+        public string Previous { get; set; }
         [JsonPropertyName("items")]
-        public IEnumerable<Playlist> Items { get; set; }
+        public IEnumerable<T> Items { get; set; }
     }
 
     public class Playlist
@@ -186,5 +193,25 @@ namespace PlaylistRandomizer
         public string Name { get; set; }
         [JsonPropertyName("href")]
         public string Resource { get; set; }
+        [JsonPropertyName("tracks")]
+        public Tracks Tracks { get; set; }
+    }
+
+    public class Tracks
+    {
+        [JsonPropertyName("href")]
+        public string Resource { get; set; }
+        [JsonPropertyName("total")]
+        public int Total { get; set; }
+    }
+
+    public class Track
+    {
+        [JsonPropertyName("uri")]
+        public string Uri { get; set; }
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+        [JsonPropertyName("track_number")]
+        public string TrackNumber { get; set; }        
     }
 }
