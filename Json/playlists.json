@@ -1,0 +1,29 @@
+[
+    {
+        "id": "6bXIpshBYfAuTEOKclEOyC",
+        "name": "Instrumental - Guitar",
+        "href": "https://api.spotify.com/v1/playlists/6bXIpshBYfAuTEOKclEOyC",
+        "tracks": {
+            "href": "https://api.spotify.com/v1/playlists/6bXIpshBYfAuTEOKclEOyC/tracks",
+            "total": 10
+        }
+    },
+    {
+        "id": "3J3w9vlucomckvbLGmOphc",
+        "name": "Funk No Vocals",
+        "href": "https://api.spotify.com/v1/playlists/3J3w9vlucomckvbLGmOphc",
+        "tracks": {
+            "href": "https://api.spotify.com/v1/playlists/3J3w9vlucomckvbLGmOphc/tracks",
+            "total": 281
+        }
+    },
+    {
+        "id": "37i9dQZF1DZ06evO1uge6k",
+        "name": "This Is ZZ Top",
+        "href": "https://api.spotify.com/v1/playlists/37i9dQZF1DZ06evO1uge6k",
+        "tracks": {
+            "href": "https://api.spotify.com/v1/playlists/37i9dQZF1DZ06evO1uge6k/tracks",
+            "total": 50
+        }
+    }
+]

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using PlaylistRandomizer.Spotify;
 using Serilog;
 
 namespace PlaylistRandomizer
@@ -22,7 +23,9 @@ namespace PlaylistRandomizer
             services
                 .AddHttpClient()
                 .AddSingleton(Configuration.GetSection(typeof(SpotifyAuthorizeConfig).Name).Get<SpotifyAuthorizeConfig>())
-                .AddSingleton<SpotifyTokenConfig>()
+                .AddTransient<SpotifyTokenConfig>()
+                .AddTransient<Api>()
+                .AddSingleton<PlaylistManager>()
                 .AddSingleton(s =>
                 {
                     Log.Logger = new LoggerConfiguration()
@@ -31,7 +34,7 @@ namespace PlaylistRandomizer
 
                     return Log.Logger;
                 })
-                .AddSingleton<Spotify>()
+                
                 .AddControllers();
         }
 
