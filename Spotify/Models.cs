@@ -67,6 +67,7 @@ namespace PlaylistRandomizer.Spotify
     {
         public static string Me => "https://api.spotify.com/v1/me";
         public static string Playlists(MeResponse me) => $"{me.UserUri}/playlists";
+        public static string PlaylistTracks(string playlistId) => $"https://api.spotify.com/v1/playlists/{playlistId}/tracks";
     }
 
     public class Envelope<T>

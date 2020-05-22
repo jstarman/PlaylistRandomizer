@@ -9,8 +9,14 @@ namespace PlaylistRandomizer
     {
         public PlaylistManager()
         {
+            Reset();
+        }
+
+        public void Reset()
+        {
             Tracks = new List<Track>();
             Playlists = new List<Playlist>();
+            _lastTrackSet = null;
         }
 
         private Envelope<TrackShell> _lastTrackSet;
@@ -36,5 +42,13 @@ namespace PlaylistRandomizer
     {
         [JsonPropertyName("playlistId")]
         public string PlaylistId { get; set; }
+    }
+
+    public class AddTracksRequest 
+    {
+        [JsonPropertyName("playlistId")]
+        public string PlaylistId { get; set; }
+        [JsonPropertyName("tracks")]
+        public string[] Tracks { get; set; }
     }
 }

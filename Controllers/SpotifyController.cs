@@ -64,7 +64,7 @@ namespace PlaylistRandomizer.Controllers
 
         [HttpGet]
         [Route("playlists")]
-        public async Task<IEnumerable<Playlist>> PlayLists() 
+        public async Task<IEnumerable<Playlist>> PlayLists()
         {
             var envelope = await _spotify.Get<Envelope<Playlist>>(SpotifyApi.Playlists(_playlistManager.Me), _playlistManager.Token);
             _playlistManager.Playlists.AddRange(envelope.Items);
@@ -73,7 +73,7 @@ namespace PlaylistRandomizer.Controllers
 
         [HttpPost]
         [Route("tracks")]
-        public async Task<IEnumerable<Track>> Tracks(PlaylistRequest request) 
+        public async Task<IEnumerable<Track>> Tracks(PlaylistRequest request)
         {
             var playlist = _playlistManager.Playlists.First(t => t.Id == request.PlaylistId);
             _playlistManager.LastTrackSet = await _spotify.Get<Envelope<TrackShell>>(playlist.Tracks.Resource, _playlistManager.Token);
@@ -88,24 +88,35 @@ namespace PlaylistRandomizer.Controllers
 
         [HttpPost]
         [Route("playlists")]
-        public async Task CreatePlaylist(PlaylistRequest request)
+        public async Task<IActionResult> CreatePlaylist(PlaylistRequest request)
         {
             var playlist = _playlistManager.Playlists.First(t => t.Id == request.PlaylistId);
             var savedCopy = await _spotify.CreatePlaylist(playlist, SpotifyApi.Playlists(_playlistManager.Me), _playlistManager.Token);
             _playlistManager.Playlists.Add(savedCopy);
+            return Ok($"{savedCopy.Id} - {savedCopy.Name}");
+        }
+
+        [HttpPost]
+        [Route("playlists/{id}/tracks")]
+        public async Task AddTracks(AddTracksRequest request)
+        {            
+            await _spotify.AddTracks(request, _playlistManager.Token);
+        }
+
+        [HttpPost]
+        [Route("clear")]
+        public IActionResult Clear() 
+        {
+            _playlistManager.Reset();
+            return Ok();
         }
         
         [HttpPost]
         [Route("test")]
-        public IActionResult Test(Envelope<TrackShell> playlists)
+        public IActionResult Test(AddTracksRequest request)
         {
-            _playlistManager.LastTrackSet = playlists;
-            if (!string.IsNullOrWhiteSpace(_playlistManager.LastTrackSet.Next.ToString()))
-            {
-                return Ok("Found it");
-            }
-
-            return Ok("no next");
+            var s = SpotifyApi.PlaylistTracks(request.PlaylistId);
+            return Ok(s);
         }
     }
 }

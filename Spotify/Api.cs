@@ -99,7 +99,24 @@ namespace PlaylistRandomizer.Spotify
             }
             else
             {
-                var error = new Exception($"Create failed with: {response.StatusCode} - {await response.Content.ReadAsStringAsync()}");
+                var error = new Exception($"Create playlist failed with: {response.StatusCode} - {await response.Content.ReadAsStringAsync()}");
+                _logger.Error(error, string.Empty);
+                throw error;
+            }
+        }
+
+        public async Task AddTracks(AddTracksRequest requestedTracks, string token)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, SpotifyApi.PlaylistTracks(requestedTracks.PlaylistId));
+            request.Headers.Add("Authorization", $"Bearer {token}");
+            request.Content = new StringContent(JsonSerializer.Serialize(requestedTracks.Tracks));
+            request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            var client = _httpClient.CreateClient();
+            var response = await client.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode) 
+            {
+                var error = new Exception($"Add tracks failed with: {response.StatusCode} - {await response.Content.ReadAsStringAsync()}");
                 _logger.Error(error, string.Empty);
                 throw error;
             }
