@@ -3,7 +3,6 @@ using PlaylistRandomizer.Models;
 using PlaylistRandomizer.Spotify;
 using Serilog;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace PlaylistRandomizer.Controllers
