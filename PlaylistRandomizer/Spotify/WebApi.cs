@@ -1,3 +1,4 @@
+using PlaylistRandomizer.Models;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,16 @@ using System.Web;
 
 namespace PlaylistRandomizer.Spotify
 {
-    public class Api
+    public interface IWebApi
+    {
+        public AuthorizeRequest Authorize();
+        public Task<TokenResponse> Authenticate(AuthorizationResponse response, string requestHmac);
+        public Task<T> Get<T>(string uri, string token);
+        public Task<Playlist> CreatePlaylist(Playlist playlist, string uri, string token);
+        public Task AddTracks(AddTracksRequest requestedTracks, string token);
+    }
+
+    public class WebApi : IWebApi
     {
         private IHttpClientFactory _httpClient;
         private SpotifyAuthorizeConfig _authorizeConfig;
@@ -18,7 +28,7 @@ namespace PlaylistRandomizer.Spotify
         private ILogger _logger;
         
 
-        public Api(IHttpClientFactory clientFactory, SpotifyAuthorizeConfig authorizeConfig, SpotifyTokenConfig tokenConfig, ILogger logger)
+        public WebApi(IHttpClientFactory clientFactory, SpotifyAuthorizeConfig authorizeConfig, SpotifyTokenConfig tokenConfig, ILogger logger)
         {
             _httpClient = clientFactory;
             _authorizeConfig = authorizeConfig;

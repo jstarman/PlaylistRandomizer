@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PlaylistRandomizer.Models;
 using PlaylistRandomizer.Spotify;
 using Serilog;
 using System.Collections.Generic;
@@ -11,11 +12,11 @@ namespace PlaylistRandomizer.Controllers
     [Route("[controller]")]
     public class SpotifyController : ControllerBase
     {
-        private readonly Api _spotify;
+        private readonly IWebApi _spotify;
         private readonly PlaylistManager _playlistManager;
         private readonly ILogger _logger;
 
-        public SpotifyController(Api spotify, PlaylistManager manager, ILogger logger)
+        public SpotifyController(IWebApi spotify, PlaylistManager manager, ILogger logger)
         {
             _spotify = spotify;
             _playlistManager = manager;
@@ -72,27 +73,24 @@ namespace PlaylistRandomizer.Controllers
         }
 
         [HttpPost]
-        [Route("tracks")]
-        public async Task<IEnumerable<Track>> Tracks(PlaylistRequest request)
+        [Route("shuffle")]
+        public async Task<ShuffleResponse> Shuffle(Models.PlaylistRequest request)
         {
-            var playlist = _playlistManager.Playlists.First(t => t.Id == request.PlaylistId);
-            _playlistManager.LastTrackSet = await _spotify.Get<Envelope<TrackShell>>(playlist.Tracks.Resource, _playlistManager.Token);
+            return await _playlistManager.ShufflePlaylist(request);
+        }
 
-            while (!string.IsNullOrWhiteSpace(_playlistManager.LastTrackSet.Next?.ToString()))
-            {
-                _playlistManager.LastTrackSet = await _spotify.Get<Envelope<TrackShell>>(_playlistManager.LastTrackSet.Next, _playlistManager.Token);
-            }
-
-            return _playlistManager.Tracks;
+        [HttpPost]
+        [Route("tracks")]
+        public async Task<IEnumerable<Track>> Tracks(Models.PlaylistRequest request)
+        {
+            return await _playlistManager.GetPlaylistTracks(request);
         }
 
         [HttpPost]
         [Route("playlists")]
-        public async Task<IActionResult> CreatePlaylist(PlaylistRequest request)
+        public async Task<IActionResult> CopyPlaylist(Models.PlaylistRequest request)
         {
-            var playlist = _playlistManager.Playlists.First(t => t.Id == request.PlaylistId);
-            var savedCopy = await _spotify.CreatePlaylist(playlist, SpotifyApi.Playlists(_playlistManager.Me), _playlistManager.Token);
-            _playlistManager.Playlists.Add(savedCopy);
+            var savedCopy = await _playlistManager.CopyPlaylist(request);
             return Ok($"{savedCopy.Id} - {savedCopy.Name}");
         }
 

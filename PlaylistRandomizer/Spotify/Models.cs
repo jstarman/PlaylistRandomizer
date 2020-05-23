@@ -65,9 +65,17 @@ namespace PlaylistRandomizer.Spotify
 
     public class SpotifyApi
     {
+        private const int _pageLimit = 100;
+        public static int? _testLimit;
+
         public static string Me => "https://api.spotify.com/v1/me";
         public static string Playlists(MeResponse me) => $"{me.UserUri}/playlists";
         public static string PlaylistTracks(string playlistId) => $"https://api.spotify.com/v1/playlists/{playlistId}/tracks";
+        public static int PageLimit 
+        { 
+            get { return _testLimit ?? _pageLimit; } 
+            set { _testLimit = value; } 
+        }
     }
 
     public class Envelope<T>

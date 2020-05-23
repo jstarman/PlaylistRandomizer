@@ -24,7 +24,7 @@ namespace PlaylistRandomizer
                 .AddHttpClient()
                 .AddSingleton(Configuration.GetSection(typeof(SpotifyAuthorizeConfig).Name).Get<SpotifyAuthorizeConfig>())
                 .AddTransient<SpotifyTokenConfig>()
-                .AddTransient<Api>()
+                .AddTransient<IWebApi, WebApi>()
                 .AddSingleton<PlaylistManager>()
                 .AddSingleton(s =>
                 {
