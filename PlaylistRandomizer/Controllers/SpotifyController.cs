@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using PlaylistRandomizer.Models;
 using PlaylistRandomizer.Spotify;
 using Serilog;
@@ -49,10 +50,9 @@ namespace PlaylistRandomizer.Controllers
                 State = queryStrings["state"]
             }, _playlistManager.Hmac);
 
-
             _playlistManager.Me = await _spotify.Get<MeResponse>(SpotifyApi.Me, _playlistManager.Token);
 
-            return Ok(_playlistManager.Me);
+            return new OkObjectResult(_playlistManager.Me);
         }
 
         [HttpGet]
@@ -64,11 +64,11 @@ namespace PlaylistRandomizer.Controllers
 
         [HttpGet]
         [Route("playlists")]
-        public async Task<IEnumerable<Playlist>> PlayLists()
+        public async Task<IActionResult> PlayLists()
         {
             var envelope = await _spotify.Get<Envelope<Playlist>>(SpotifyApi.Playlists(_playlistManager.Me), _playlistManager.Token);
             _playlistManager.Playlists.AddRange(envelope.Items);
-            return _playlistManager.Playlists;
+            return new OkObjectResult(_playlistManager.Playlists);
         }
 
         [HttpPost]
@@ -96,18 +96,18 @@ namespace PlaylistRandomizer.Controllers
         [HttpPost]
         [Route("playlists/{id}/tracks")]
         public async Task AddTracks(AddTracksRequest request)
-        {            
+        {
             await _spotify.AddTracks(request, _playlistManager.Token);
         }
 
         [HttpPost]
         [Route("clear")]
-        public IActionResult Clear() 
+        public IActionResult Clear()
         {
             _playlistManager.Reset();
             return Ok();
         }
-        
+
         [HttpPost]
         [Route("test")]
         public IActionResult Test(AddTracksRequest request)

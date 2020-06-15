@@ -41,6 +41,4 @@ Spotify playlist song shuffler
 - [x] Shuffle playlist tracks
 - [x] Add shuffled playlist tracks to copied playlist
 - [x] Reload and verify added playlist and tracks
-- [ ] Delete original playlist
-- [ ] Rename copy to original
 - [ ] Create a UI of some sort

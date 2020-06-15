@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Shuffle</title>
+    <script src="js/shuffle.js"></script>
+</head>
+<body>
+    <form action="javascript:void(0);" method="POST" onsubmit="getAuthorization()">
+        <input type="submit" value="Authorize">
+    </form>
+    <p id="username"></p>
+    <form action="javascript:void(0);" method="POST" onsubmit="getPlayLists()">
+        <input type="submit" value="Playlist">
+    </form>
+    <table>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+        </tr>
+        <tbody id="playlists"></tbody>
+    </table>
+</body>
+</html>
