@@ -67,53 +67,16 @@ namespace PlaylistRandomizer.Controllers
         public async Task<IActionResult> PlayLists()
         {
             var envelope = await _spotify.Get<Envelope<Playlist>>(SpotifyApi.Playlists(_playlistManager.Me), _playlistManager.Token);
+            _playlistManager.Reset();
             _playlistManager.Playlists.AddRange(envelope.Items);
             return new OkObjectResult(_playlistManager.Playlists);
         }
 
         [HttpPost]
-        [Route("shuffle")]
-        public async Task<ShuffleResponse> Shuffle(Models.PlaylistRequest request)
+        [Route("shuffle/{id}")]
+        public async Task<ShuffleResponse> Shuffle(string id)
         {
-            return await _playlistManager.ShufflePlaylist(request);
-        }
-
-        [HttpPost]
-        [Route("tracks")]
-        public async Task<IEnumerable<Track>> Tracks(Models.PlaylistRequest request)
-        {
-            return await _playlistManager.GetPlaylistTracks(request);
-        }
-
-        [HttpPost]
-        [Route("playlists")]
-        public async Task<IActionResult> CopyPlaylist(Models.PlaylistRequest request)
-        {
-            var savedCopy = await _playlistManager.CopyPlaylist(request);
-            return Ok($"{savedCopy.Id} - {savedCopy.Name}");
-        }
-
-        [HttpPost]
-        [Route("playlists/{id}/tracks")]
-        public async Task AddTracks(AddTracksRequest request)
-        {
-            await _spotify.AddTracks(request, _playlistManager.Token);
-        }
-
-        [HttpPost]
-        [Route("clear")]
-        public IActionResult Clear()
-        {
-            _playlistManager.Reset();
-            return Ok();
-        }
-
-        [HttpPost]
-        [Route("test")]
-        public IActionResult Test(AddTracksRequest request)
-        {
-            var s = SpotifyApi.PlaylistTracks(request.PlaylistId);
-            return Ok(s);
+            return await _playlistManager.ShufflePlaylist(new Models.PlaylistRequest { PlaylistId = id });
         }
     }
 }

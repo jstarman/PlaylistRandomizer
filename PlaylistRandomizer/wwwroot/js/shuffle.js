@@ -13,7 +13,7 @@ function getAuthorization() {
 
 function displayUser(data) {
     document.getElementById('username').innerText = `Authorized as ${data.display_name}`;
-    getPlayLists();    
+    getPlayLists();
 }
 
 function getPlayLists() {
@@ -35,7 +35,7 @@ function displayPlaylists(data) {
     data.forEach(item => {
         let shuffleButton = button.cloneNode(false);
         shuffleButton.innerText = 'Shuffle';
-        shuffleButton.setAttribute('onclick', `shuffleList(${item.id})`);
+        shuffleButton.setAttribute('onclick', `shuffleList('${item.id}')`);
 
         let tr = tBody.insertRow();
 
@@ -46,4 +46,16 @@ function displayPlaylists(data) {
         let textNode = document.createTextNode(item.name);
         td2.appendChild(textNode);
     });
+}
+
+function shuffleList(id) {
+    fetch(`${uri}/shuffle/${id}`, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(() => getPlayLists())
+        .catch(error => console.error('Unable to shuffle playlists.', error));
 }

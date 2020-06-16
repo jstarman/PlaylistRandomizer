@@ -23,7 +23,7 @@ namespace PlaylistRandomizer
         public MeResponse Me { get; set; }
         public List<Playlist> Playlists { get; set; }
         public List<Track> Tracks { get; private set; }
-        public Envelope<TrackShell> LastTrackSet
+        private Envelope<TrackShell> LastTrackSet
         {
             get { return _lastTrackSet; }
             set
