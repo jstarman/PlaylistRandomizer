@@ -26,7 +26,7 @@ namespace PlaylistRandomizer.Spotify
         private SpotifyAuthorizeConfig _authorizeConfig;
         private SpotifyTokenConfig _tokenConfig;
         private ILogger _logger;
-        
+
 
         public WebApi(IHttpClientFactory clientFactory, SpotifyAuthorizeConfig authorizeConfig, SpotifyTokenConfig tokenConfig, ILogger logger)
         {
@@ -82,7 +82,7 @@ namespace PlaylistRandomizer.Spotify
             var client = _httpClient.CreateClient();
             var tokenResponse = await client.SendAsync(request);
             var sessionToken = await GetContent<TokenResponse>(tokenResponse.Content);
-            
+
             if (string.IsNullOrWhiteSpace(sessionToken.Token))
             {
                 throw new Exception("Authentication Error: token was not retrieved.");
@@ -96,7 +96,7 @@ namespace PlaylistRandomizer.Spotify
             var copy = playlist.Copy();
 
             var request = new HttpRequestMessage(HttpMethod.Post, uri);
-            request.Headers.Add("Authorization", $"Bearer {token}");            
+            request.Headers.Add("Authorization", $"Bearer {token}");
             request.Content = new StringContent(JsonSerializer.Serialize(copy));
             request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             var client = _httpClient.CreateClient();
@@ -124,7 +124,7 @@ namespace PlaylistRandomizer.Spotify
             var client = _httpClient.CreateClient();
             var response = await client.SendAsync(request);
 
-            if (!response.IsSuccessStatusCode) 
+            if (!response.IsSuccessStatusCode)
             {
                 var error = new Exception($"Add tracks failed with: {response.StatusCode} - {await response.Content.ReadAsStringAsync()}");
                 _logger.Error(error, string.Empty);
@@ -148,5 +148,5 @@ namespace PlaylistRandomizer.Spotify
             var body = await content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<T>(body);
         }
-    }    
+    }
 }
