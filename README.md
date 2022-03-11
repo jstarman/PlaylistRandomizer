@@ -24,7 +24,7 @@ Spotify does not have a `DELETE` playlist on their public API. Go into the spoti
 
 ## Run
 
-1. `dotnet run`
+1. `dotnet run --project .\PlaylistRandomizer\PlaylistRandomizer.csproj`
 1. The first time create self signed cert `dotnet dev-certs https`
 1. <https://localhost:5001>
 

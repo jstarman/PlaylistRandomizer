@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Options;
 using PlaylistRandomizer.Models;
 using Serilog;
 using System;
@@ -28,10 +29,10 @@ namespace PlaylistRandomizer.Spotify
         private ILogger _logger;
 
 
-        public WebApi(IHttpClientFactory clientFactory, SpotifyAuthorizeConfig authorizeConfig, SpotifyTokenConfig tokenConfig, ILogger logger)
+        public WebApi(IHttpClientFactory clientFactory, IOptions<SpotifyAuthorizeConfig> authorizeConfig, SpotifyTokenConfig tokenConfig, ILogger logger)
         {
             _httpClient = clientFactory;
-            _authorizeConfig = authorizeConfig;
+            _authorizeConfig = authorizeConfig.Value;
             _tokenConfig = tokenConfig;
             _logger = logger;
         }
