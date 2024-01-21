@@ -31,6 +31,7 @@ Spotify does not have a `DELETE` playlist on their public API. Go into the spoti
     ![index](img/indexpage.png)
 1. Click Authorize. Might silently authorize if you are logged into the spotify web app in the same browser. See console output for details.
 1. Click playlist to load
+1. If this still does not work authorize directly GET <https://localhost:5001/spotify/authorize>
 
     ![playlist](img/playlist.png)
 1. Shuffle a playlist. Mash the buttons once! If you don't know what's going on watch the console. When a successful shuffle occurs a copy will be added to the list.
